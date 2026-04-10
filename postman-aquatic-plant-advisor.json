@@ -1,0 +1,38 @@
+{
+  "info": {
+    "name": "Aquatic Plant Advisor API",
+    "_postman_id": "11111111-2222-3333-4444-555555555555",
+    "description": "Basic collection for team: auth & admin test routes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get current user (/api/me)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/me",
+          "protocol": "http",
+          "host": ["127.0.0.1"],
+          "port": "8000",
+          "path": ["api", "me"]
+        }
+      }
+    },
+    {
+      "name": "Admin ping (/api/admin/ping)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/admin/ping",
+          "protocol": "http",
+          "host": ["127.0.0.1"],
+          "port": "8000",
+          "path": ["api", "admin", "ping"]
+        }
+      }
+    }
+  ]
+}

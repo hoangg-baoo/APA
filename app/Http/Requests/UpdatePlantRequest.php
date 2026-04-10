@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
+
+class UpdatePlantRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'name'        => ['sometimes', 'required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+
+            // ✅ block negative + bounds
+            'ph_min'   => ['nullable', 'numeric', 'min:0', 'max:14'],
+            'ph_max'   => ['nullable', 'numeric', 'min:0', 'max:14'],
+            'temp_min' => ['nullable', 'numeric', 'min:0', 'max:40'],
+            'temp_max' => ['nullable', 'numeric', 'min:0', 'max:40'],
+
+            'light_level' => ['sometimes', 'required', 'in:low,medium,high'],
+            'difficulty'  => ['sometimes', 'required', 'in:easy,medium,hard'],
+
+            'image_sample' => ['nullable', 'string', 'max:2048'],
+            'care_guide'   => ['nullable', 'string'],
+
+            'image_file' => ['nullable', 'image', 'max:5120'],
+        ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $v) {
+            // For update: still enforce min<=max if both exist in the final input (even partial updates)
+            $phMin = $this->input('ph_min');
+            $phMax = $this->input('ph_max');
+            if ($phMin !== null && $phMax !== null && is_numeric($phMin) && is_numeric($phMax)) {
+                if ((float)$phMin > (float)$phMax) {
+                    $v->errors()->add('ph_min', 'pH min must be less than or equal to pH max.');
+                }
+            }
+
+            $tMin = $this->input('temp_min');
+            $tMax = $this->input('temp_max');
+            if ($tMin !== null && $tMax !== null && is_numeric($tMin) && is_numeric($tMax)) {
+                if ((float)$tMin > (float)$tMax) {
+                    $v->errors()->add('temp_min', 'Temperature min must be less than or equal to temperature max.');
+                }
+            }
+        });
+    }
+}
